@@ -1,73 +1,38 @@
-# VPC Peering Lab — AWS Cloud Networking Simulator
+# AWS VPC Peering Lab Simulation
 
-A realistic, zero-cost, educational simulation of **AWS Virtual Private Cloud (VPC) Peering**, route table propagation, and ENI security group firewall rules. Built with **React**, **TypeScript**, **Tailwind CSS**, and **Vite**.
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-Inspired by [jayendras-code/AWS-VPC-Peering-Project](https://github.com/jayendras-code/AWS-VPC-Peering-Project).
+An interactive, educational, browser-based simulation of **Amazon Web Services (AWS) Virtual Private Cloud (VPC) Peering**, route table propagation, and ENI security group firewalls.
 
-> **EDUCATIONAL SIMULATION NOTICE**: This application runs entirely client-side in the browser. It **does not** require an Amazon Web Services account, AWS credentials, or paid cloud resources. No real AWS APIs are called and zero AWS billing is incurred. All routing, CIDR overlap validation, security group filtering, and packet transit hop calculations are simulated according to official AWS networking specifications.
-
----
-
-## 🌟 Key Features
-
-1. **AWS Management Console UI/UX**:
-   - Dark navy enterprise console styling (`#0b1120` / `#0f172a`), AWS orange (`#ff9900`), purple, and blue networking accents.
-   - Resource inspectors, live status badges, breadcrumbs, and real-time metric counters.
-
-2. **Interactive Network Topology Visualizer**:
-   - High-fidelity dual-VPC architecture map rendered with security boundaries.
-   - Distinct visual cues for public subnets (amber glow + attached Internet Gateway) and private subnets (purple/emerald with lock icon).
-   - Animated packet tracing (`ewb-app-a` $\rightarrow$ route table $\rightarrow$ peering link $\rightarrow$ return route table $\rightarrow$ `ewb-app-b`).
-   - Click-to-inspect side drawer for all VPCs, subnets, route tables, peering connections, security groups, and EC2 hosts.
-   - Pan and zoom controls (70% to 140%).
-
-3. **VPC & Subnet Management**:
-   - RFC1918 CIDR validation engine.
-   - Overlap detector (automatically rejects conflicting VPC IP ranges).
-   - Subnet containment validator (verifies subnets fall within parent VPC).
-   - AWS reserved address calculator (5 reserved IPs per subnet).
-
-4. **Route Tables & Bidirectional Propagation**:
-   - Simulates real AWS route tables:
-     - `ewb-rt-a-public`: `10.10.0.0/16 → local`, `0.0.0.0/0 → ewb-igw-a`, `10.20.0.0/16 → ewb-a-b-peer`
-     - `ewb-rt-a-private`: `10.10.0.0/16 → local`, `10.20.0.0/16 → ewb-a-b-peer`
-     - `ewb-rt-b-private`: `10.20.0.0/16 → local`, `10.10.0.0/16 → ewb-a-b-peer`
-   - Add/delete route entries with live validation.
-   - Explains asymmetric routing drops when return routes are omitted.
-
-5. **Peering Connection Lifecycle**:
-   - Full lifecycle simulation: *Request Created* $\rightarrow$ *Pending Acceptance* $\rightarrow$ *Active* $\rightarrow$ *Rejected / Deleted*.
-   - Dynamic route target status (`active` vs `blackhole` when peering is broken).
-
-6. **Stateful Security Group Enforcement**:
-   - Enforces AWS security best practices: **strictly rejects SSH (port 22) from `0.0.0.0/0`**.
-   - Bastion host restricted to trusted admin IP `/32`.
-   - Private workloads accept SSH and ICMP only from authorized source IPs.
-
-7. **Interactive Terminal Connectivity Simulator**:
-   - Realistic Linux CLI terminal with history (Up/Down arrows) and tab completion.
-   - Commands supported:
-     - `ping 10.20.1.10` / `ping 10.10.2.10` (realistic RTT and 0% loss stats)
-     - `traceroute 10.20.1.10` (hop-by-hop latency and router names)
-     - `ip route` (displays kernel routing table derived from current AWS route tables)
-     - `curl 10.20.1.10:80`
-     - `ssh -i key.pem ec2-user@10.20.1.10`
-     - `help`, `clear`
-
-8. **Guided Controlled Failure & Recovery Lab**:
-   - Step 1: Baseline verification (ping succeeds).
-   - Step 2: Fault injection (remove ICMP inbound rule from `ewb-app-b-sg`).
-   - Step 3: Observe failure (100% packet loss with root-cause isolation).
-   - Step 4: Remediation (restore ICMP rule).
-   - Step 5: Post-recovery verification (100% success restored).
-
-9. **Project Report Generator & PDF Export**:
-   - Formatted technical report containing student info, architecture diagrams, inventory, route audits, test results, and learning outcomes.
-   - Export to Markdown (`.md`) or Print / Save as PDF.
+**Author:** Rohan  
+**Inspiration & Reference Project:** [jayendras-code/AWS-VPC-Peering-Project](https://github.com/jayendras-code/AWS-VPC-Peering-Project)
 
 ---
 
-## 🏛️ Network Architecture
+> ### ⚠️ Educational Simulation Notice
+> **This project is a localized, client-side educational simulation.**  
+> It runs completely in the web browser without calling Amazon Web Services APIs, requiring AWS credentials, or provisioning paid cloud infrastructure. All IP CIDR validations, routing resolutions, packet hops, and security group filtering model AWS RFC1918 specifications in browser memory with zero AWS spend.
+
+---
+
+## 📌 Project Overview & Objectives
+
+In modern enterprise cloud architectures, multi-VPC designs are standard for isolating production, staging, and shared infrastructure. While AWS VPC Peering is a core networking skill, hands-on learning often presents barriers such as accidental cloud billing (from running compute instances, NAT Gateways, or Elastic IPs) and the lack of immediate visual feedback when asymmetric routing errors occur.
+
+This simulation was created to bridge that gap by providing:
+1. **Zero-Spend Learning**: A realistic, browser-based AWS console experience that requires no credit card or cloud account.
+2. **Network Engineering Sandbox**: A playground to inspect non-overlapping CIDR blocks, configure route table entries, and observe stateful firewall behavior.
+3. **Observability & Diagnostics**: Immediate visual feedback showing exactly where packets travel and where they drop when configuration errors are introduced.
+
+---
+
+## 🏛️ Simulated Network Architecture
+
+The lab models a dual-VPC architecture situated in the `ap-south-1` (Mumbai) region:
 
 ```
                     ┌────────────────────────────────────────────────────────┐
@@ -75,13 +40,14 @@ Inspired by [jayendras-code/AWS-VPC-Peering-Project](https://github.com/jayendra
                     │                                                        │
 ┌───────────────────┴─────────────────────────┐   ┌──────────────────────────┴────────────────┐
 │ VPC A: ewb-vpc-a (10.10.0.0/16)              │   │ VPC B: ewb-vpc-b (10.20.0.0/16)           │
+│ [Requester VPC]                             │   │ [Accepter VPC]                            │
 │                                             │   │                                           │
 │  ┌───────────────────────────────────────┐  │   │                                           │
 │  │ Public Subnet: ewb-a-public           │  │   │                                           │
 │  │ 10.10.1.0/24                          │  │   │                                           │
 │  │ ┌───────────────────┐                 │  │   │                                           │
 │  │ │ ewb-bastion       │  ┌────────────┐ │  │   │                                           │
-│  │ │ 10.10.1.10        │──│ ewb-igw-a  │ │  │   │  (No Internet Gateway - Isolated)         │
+│  │ │ 10.10.1.10        │──│ ewb-igw-a  │ │  │   │  (No Internet Gateway - Isolated VPC)     │
 │  │ │ (Pub: 13.234...)  │  │ (IGW)      │ │  │   │                                           │
 │  │ └───────────────────┘  └────────────┘ │  │   │                                           │
 │  └───────────────────────────────────────┘  │   │                                           │
@@ -102,86 +68,194 @@ Inspired by [jayendras-code/AWS-VPC-Peering-Project](https://github.com/jayendra
                                   (AWS Internal Fiber Link)
 ```
 
+### Network Resource Breakdown
+- **VPC A (`ewb-vpc-a`)**: `10.10.0.0/16`
+  - **Public Subnet (`ewb-a-public`)**: `10.10.1.0/24` with Internet Gateway (`ewb-igw-a`) and Bastion Host (`10.10.1.10`).
+  - **Private Subnet (`ewb-a-private`)**: `10.10.2.0/24` hosting Workload A (`10.10.2.10`).
+- **VPC B (`ewb-vpc-b`)**: `10.20.0.0/16`
+  - **Private Subnet (`ewb-b-private`)**: `10.20.1.0/24` hosting Workload B (`10.20.1.10`).
+  - Completely isolated: **No Internet Gateway** attached.
+- **Peering Link (`ewb-a-b-peer`)**: ID `pcx-0123456789abcdef0` directly connecting VPC A and VPC B.
+
 ---
 
-## 🚀 Quick Start (Local Run)
+## ⚡ Key Features & Capabilities
 
-### Prerequisites
-- Node.js 18+ (tested with Node.js v24.22.1 LTS)
-- npm 9+
+- **Interactive Network Topology**:
+  - Live vector SVG diagram with zoom/pan and visual differentiation between public subnets (amber glow) and private subnets (purple/emerald with lock icon).
+  - Animated traffic flow showing packets passing through route tables, peering bridge, and security groups.
+  - Click-to-inspect drawer revealing AWS metadata, ARNs, and copyable resource IDs.
+- **RFC1918 CIDR Validation Engine**:
+  - Enforces valid IPv4 block masks (/16 to /28).
+  - Automatically rejects overlapping VPC CIDRs with clear routing explanations.
+  - Validates subnet containment inside parent VPC CIDR blocks.
+- **Route Table Management & Bidirectional Propagation**:
+  - Models realistic route entries (`local`, `internet-gateway`, `peering-connection`).
+  - Demonstrates asymmetric routing drop detection when the return route is missing.
+- **Peering Connection Lifecycle**:
+  - Models *Pending Acceptance* $\rightarrow$ *Active* $\rightarrow$ *Rejected / Deleted* state transitions.
+  - Marks dependent route table targets as `blackhole` if peering is terminated.
+- **Stateful Security Group Enforcement**:
+  - Enforces least-privilege cloud security: **strictly blocks `0.0.0.0/0` SSH access**.
+  - Restricts Bastion SSH to `/32` admin sources and workload SSH to Bastion only.
+- **Interactive EC2 Linux CLI Terminal**:
+  - Execute `ping 10.20.1.10`, `traceroute 10.20.1.10`, `ip route`, `curl`, and `ssh`.
+  - Realistic latency generation and 6-stage hop evaluation inspector.
+- **Controlled Failure & Recovery Guided Lab**:
+  - A step-by-step 5-stage walkthrough: Baseline check $\rightarrow$ Fault injection (remove ICMP rule) $\rightarrow$ Observe drop $\rightarrow$ Remediate $\rightarrow$ Confirm recovery.
+- **Activity Log & Audit Trail**:
+  - Timestamped chronological logging of peering events, route updates, and connectivity tests with search, category filtering, and JSON export.
+- **Technical Report Generator**:
+  - Built-in report compilation with student metadata input, Markdown (`.md`) download, and print-ready PDF styling.
 
-### Installation & Launch
+---
 
-```bash
-# 1. Install dependencies
-npm install
+## 🛠️ Technologies Used
 
-# 2. Run the Vite development server
-npm run dev
+- **Framework**: React 18
+- **Language**: TypeScript 5 (Strict Mode)
+- **Bundler & Dev Server**: Vite 5
+- **Styling**: Tailwind CSS 3 (AWS Console-inspired dark theme)
+- **Icons**: Lucide React
+- **Persistence**: HTML5 LocalStorage API
+- **Diagrams**: Mermaid.js and interactive vector SVG
+
+---
+
+## 📂 Repository Folder Structure
+
+```
+aws-vpc-peering-lab/
+├── 01_Report/
+│   └── project-report.md         # Detailed technical academic report
+├── 02_Architecture/
+│   ├── architecture.md           # Architecture specifications & simulation design
+│   └── architecture-diagram.mmd  # Valid Mermaid diagram source code
+├── Screenshots/
+│   └── README.md                 # UI screenshots checklist and capture guide
+├── public/
+│   └── favicon.svg               # Web application icon
+├── src/
+│   ├── types/
+│   │   └── network.ts            # Domain types for VPC, Subnet, RouteTable, SG, Host
+│   ├── utils/
+│   │   ├── cidr.ts               # IPv4 bitwise math, overlap & containment validation
+│   │   ├── simulator.ts          # 6-stage packet routing & SG evaluation engine
+│   │   ├── storage.ts            # Initial state & LocalStorage persistence handlers
+│   │   └── export.ts             # Markdown report generator & PDF print helpers
+│   ├── context/
+│   │   └── LabContext.tsx        # React global state store & activity logger
+│   ├── components/
+│   │   ├── layout/               # Sidebar, Header, Resource Inspector drawer
+│   │   ├── topology/             # Interactive Network Topology visualizer
+│   │   └── views/                # Dashboard, VPCs, Subnets, Routes, Peering, SG, Terminal, Lab, Report
+│   ├── App.tsx                   # Main layout and tab routing
+│   ├── main.tsx                  # React DOM root entry
+│   └── index.css                 # Tailwind CSS & custom scrollbar directives
+├── index.html                    # Single Page Application entry HTML
+├── vite.config.ts                # Vite build config with relative base path
+├── tsconfig.json                 # TypeScript compiler configuration
+├── tailwind.config.js            # Tailwind custom theme and AWS colors
+├── package.json                  # Dependencies and execution scripts
+├── .gitignore                    # Git exclusions
+└── README.md                     # Root project documentation
 ```
 
-Open your browser to [http://localhost:5173](http://localhost:5173).
+---
 
-### Production Build & Preview
+## 🚀 Installation & Local Execution
+
+### Prerequisites
+- Node.js 18+ (tested on Node.js v24.22.1 LTS)
+- npm 9+
+
+### 1. Clone the repository
+```bash
+git clone <your-repository-url>
+cd aws-vpc-peering-project
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Start development server
+```bash
+npm run dev
+```
+Open your browser to [http://localhost:5173/](http://localhost:5173/).
+
+---
+
+## 📦 Production Build & Local Preview
+
+To compile the TypeScript code and generate an optimized production bundle:
 
 ```bash
-# Build production bundle with TypeScript check
+# Type check and build
 npm run build
 
 # Preview production build locally
 npm run preview
 ```
+The output is bundled into the `dist/` folder.
 
 ---
 
-## 🌐 Deployment Instructions
+## 🌐 Deployment Guide
 
-### Option 1: Vercel (Recommended — 1-Click)
-1. Push this repository to GitHub.
-2. Log into [vercel.com](https://vercel.com) and click **"Add New Project"**.
+### Deploying to Vercel (Recommended)
+1. Push your repository to GitHub.
+2. Sign in to [Vercel](https://vercel.com/) and click **"Add New Project"**.
 3. Import your GitHub repository.
-4. Framework Preset will automatically detect **Vite**.
-5. Click **"Deploy"**. Your live simulation URL will be ready in seconds!
+4. Vercel automatically detects **Vite** as the framework preset.
+5. Click **"Deploy"**. The site will be built and live with SSL in seconds.
 
-### Option 2: GitHub Pages
-1. Build the production bundle:
-   ```bash
-   npm run build
+### Deploying to GitHub Pages
+`vite.config.ts` is configured with `base: './'` to support relative asset paths:
+1. Run `npm run build`.
+2. Push the contents of the `dist/` folder to the `gh-pages` branch, or configure GitHub Actions:
+   ```yaml
+   name: Deploy to GitHub Pages
+   on:
+     push:
+       branches: [main]
+   jobs:
+     deploy:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with:
+             node-version: 20
+         - run: npm install
+         - run: npm run build
+         - uses: peaceiris/actions-gh-pages@v3
+           with:
+             github_token: ${{ secrets.GITHUB_TOKEN }}
+             publish_dir: ./dist
    ```
-2. The `vite.config.ts` is configured with `base: './'` to support relative GitHub Pages subpaths.
-3. Install the GitHub Pages deployment helper (optional):
-   ```bash
-   npm install -D gh-pages
-   ```
-4. Add to `package.json` scripts:
-   ```json
-   "deploy": "gh-pages -d dist"
-   ```
-5. Run:
-   ```bash
-   npm run deploy
-   ```
-6. In your GitHub repository settings under **Pages**, set branch to `gh-pages` / `/ (root)`.
 
 ---
 
-## 📸 Student Demo & Screenshots Checklist
+## 🔮 Future Improvements
 
-When presenting this project for evaluation, coursework, or technical portfolios, capture the following screenshots:
+Proposed enhancements for future iterations:
+- [ ] **Cross-Region Peering**: Simulate inter-region peering latency (e.g., `ap-south-1` to `us-east-1` with realistic ~180ms delay).
+- [ ] **Transit Gateway (TGW) Hub-and-Spoke**: Expand point-to-point peering into central routing hubs connecting 3+ VPCs.
+- [ ] **Network ACL (NACL) Layer**: Add stateless subnet-level firewall rules with numbered priority evaluation.
+- [ ] **VPC Flow Logs Visualizer**: Interactive log stream viewer modeling CloudWatch VPC Flow Log records.
 
-- [ ] **1. Dashboard Overview**: Showing the metric cards (2 VPCs, 3 Subnets, Active Peering, 3 Hosts) and Network Health Score.
-- [ ] **2. Interactive Topology**: Showing both VPCs side-by-side with active peering bridge and animated packet traversal.
-- [ ] **3. Resource Inspector**: Inspecting `ewb-app-a` or `ewb-vpc-a` with full metadata and copyable resource IDs.
-- [ ] **4. Peering Connection Workflow**: Demonstrating *Pending Acceptance* and *Active* states.
-- [ ] **5. Route Table Propagation**: Viewing `ewb-rt-a-private` and `ewb-rt-b-private` route entries targeting the peering link.
-- [ ] **6. Security Group Compliance**: Demonstrating that SSH is restricted to `/32` and `0.0.0.0/0` is blocked.
-- [ ] **7. Terminal Diagnostic Test**: Running `ping 10.20.1.10` with 0% loss, and `traceroute 10.20.1.10` showing hop latencies.
-- [ ] **8. Controlled Failure & Recovery Walkthrough**: Showing Step 2 (fault injected) $\rightarrow$ Step 3 (packet timeout) $\rightarrow$ Step 4/5 (recovered).
-- [ ] **9. Activity Audit Log**: Showing the chronological log of system events.
-- [ ] **10. Downloaded Project Report**: Generating the Markdown or PDF report featuring your name and institution.
+---
+
+## 🤝 Acknowledgements & Inspiration
+
+- Inspired by the open-source AWS networking project by **Jayendra**: [AWS-VPC-Peering-Project](https://github.com/jayendras-code/AWS-VPC-Peering-Project).
+- Built following official [AWS VPC Peering Documentation](https://docs.aws.amazon.com/vpc/latest/peering/what-is-vpc-peering.html) and RFC1918 private networking specifications.
 
 ---
 
 ## 📄 License
 
-MIT License. Designed for academic and cloud engineering portfolio demonstration.
+This project is licensed under the [MIT License](LICENSE).

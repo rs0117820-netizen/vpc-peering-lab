@@ -329,7 +329,7 @@ export const INITIAL_HOSTS: SimulatedHost[] = [
 ];
 
 export const INITIAL_STUDENT_INFO: StudentInfo = {
-  studentName: 'Jayendra & Cloud Engineering Student',
+  studentName: 'Rohan',
   studentIdOrRoll: 'AWS-NET-2026-001',
   institution: 'Department of Computer Science & Cloud Infrastructure',
   submissionDate: new Date().toISOString().split('T')[0],

@@ -1,7 +1,10 @@
 {
-  "name": "vpc-peering-lab",
+  "name": "aws-vpc-peering-lab",
   "private": true,
   "version": "1.0.0",
+  "description": "Educational simulation of AWS VPC Peering, route propagation, and security groups",
+  "author": "Rohan",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

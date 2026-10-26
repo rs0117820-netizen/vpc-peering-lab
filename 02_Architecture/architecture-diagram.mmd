@@ -1,0 +1,79 @@
+flowchart TD
+    %% AWS VPC Peering Lab Simulation - Architectural Diagram
+    %% Author: Rohan
+    %% Status: Simulated Architecture (Client-Side Browser Execution)
+
+    subgraph ClientBrowser["Client Web Browser (Zero-Cost Local Simulation)"]
+        subgraph UI_Layer["Presentation Layer (React 18 + Tailwind CSS)"]
+            Dashboard["VPC Dashboard\n(Health Score & Metrics)"]
+            Topology["Interactive Topology Map\n(SVG Vector Canvas & Packet Animation)"]
+            Terminal["EC2 CLI Terminal\n(ping, traceroute, ip route)"]
+            Inspector["Resource Inspector Drawer\n(AWS Metadata & Copyable IDs)"]
+            FailureLab["Controlled Failure Lab\n(Fault Injection & Recovery)"]
+        end
+
+        subgraph State_Layer["Simulation Engine & State Store (LabContext)"]
+            StateStore[("Application State Store\nLocalStorage Persistence")]
+            CIDR_Engine["RFC1918 CIDR Engine\n(Bitwise Overlap & Containment)"]
+            Route_Sim["Packet Routing Simulator\n(Longest Prefix Match & Hops)"]
+            SG_Filter["Stateful Security Group Evaluator\n(ENI Firewall Enforcement)"]
+        end
+    end
+
+    subgraph Simulated_AWS["Simulated AWS Cloud Environment (Region: ap-south-1)"]
+        subgraph VPC_A["Simulated VPC A: ewb-vpc-a (10.10.0.0/16) - Requester"]
+            IGW_A["Internet Gateway\n(ewb-igw-a)"]
+
+            subgraph Subnet_A_Public["Public Subnet: ewb-a-public (10.10.1.0/24)"]
+                Host_Bastion["Simulated Bastion Host\newb-bastion (10.10.1.10)\nPub IP: 13.234.112.45"]
+                SG_Bastion["Security Group: ewb-bastion-sg\n(SSH TCP 22 from Trusted /32 only)"]
+            end
+
+            subgraph Subnet_A_Private["Private Subnet: ewb-a-private (10.10.2.0/24)"]
+                Host_AppA["Simulated Workload A\newb-app-a (10.10.2.10)"]
+                SG_AppA["Security Group: ewb-app-a-sg\n(SSH from Bastion, ICMP from App B)"]
+            end
+
+            RT_A_Public["Route Table: ewb-rt-a-public\n- 10.10.0.0/16 -> local\n- 0.0.0.0/0 -> ewb-igw-a\n- 10.20.0.0/16 -> ewb-a-b-peer"]
+            RT_A_Private["Route Table: ewb-rt-a-private\n- 10.10.0.0/16 -> local\n- 10.20.0.0/16 -> ewb-a-b-peer"]
+        end
+
+        subgraph VPC_Peering_Link["Simulated AWS Peering Connection"]
+            PCX["Peering Connection: ewb-a-b-peer\n(pcx-0123456789abcdef0)\nStatus: Active / Pending / Deleted"]
+        end
+
+        subgraph VPC_B["Simulated VPC B: ewb-vpc-b (10.20.0.0/16) - Accepter"]
+            No_IGW["Isolated VPC: No Internet Gateway"]
+
+            subgraph Subnet_B_Private["Private Subnet: ewb-b-private (10.20.1.0/24)"]
+                Host_AppB["Simulated Workload B\newb-app-b (10.20.1.10)"]
+                SG_AppB["Security Group: ewb-app-b-sg\n(SSH from Bastion, ICMP from App A)"]
+            end
+
+            RT_B_Private["Route Table: ewb-rt-b-private\n- 10.20.0.0/16 -> local\n- 10.10.0.0/16 -> ewb-a-b-peer (Return Route)"]
+        end
+    end
+
+    %% Wiring UI to Engine
+    UI_Layer --> State_Layer
+
+    %% Wiring VPC A components
+    Host_Bastion --- SG_Bastion
+    Host_AppA --- SG_AppA
+    Subnet_A_Public --> RT_A_Public
+    Subnet_A_Private --> RT_A_Private
+    RT_A_Public -.-> IGW_A
+
+    %% Wiring VPC B components
+    Host_AppB --- SG_AppB
+    Subnet_B_Private --> RT_B_Private
+
+    %% Inter-VPC Peering Connections
+    RT_A_Private ==>|Forward Route: 10.20.0.0/16| PCX
+    RT_B_Private ==>|Return Route: 10.10.0.0/16| PCX
+    PCX <===>|Simulated Private Fiber Wire| Host_AppA
+    PCX <===>|Simulated Private Fiber Wire| Host_AppB
+
+    %% Simulation Evaluations
+    Route_Sim -.->|Validates Routing| PCX
+    SG_Filter -.->|Inspects Ingress| SG_AppB
